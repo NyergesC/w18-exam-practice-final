@@ -1,6 +1,7 @@
 import { useState } from "react"
+import LoadingMask from "./LoadingMask"
 
-const Subscription= () => {
+/* const Subscription= () => {
 
     const[email, setEmail] = useState("")
     const[isPending, setIsPending] = useState(false)
@@ -55,8 +56,8 @@ const Subscription= () => {
         </div>
     )
 }
-
-export default Subscription
+ */
+/* export default Subscription */
 
 
 /* import React from 'react'
@@ -78,3 +79,67 @@ function Subscription() {
 };
 
 export default Subscription */
+
+//ORAI MUNKAN HETFON
+
+const Subscription= () => {
+
+    const [mail, setMail] = useState("")
+    const [valid, setValid] = useState(false)
+    const [loader, setLoader] = useState(false)
+    const [done, setDone] = useState(false)
+    const [hide, setHide] = useState(false)
+
+
+    //form nelkul
+
+    const handleInputChange = (event) => {
+
+        setMail(event.target.value)
+        mail.includes("@") && mail.includes(".") ? setValid(true) : setValid(false)        
+    };
+
+    //form-ba
+
+    const postSubscribeData =  () => {
+        fetch('https://demoapi.com/api/series/newsletter', {
+            method: "POST",
+            body: JSON.stringify({
+                "email": mail
+            })
+        }).then(res => {
+            setLoader(false);
+            setDone(true);
+            setTimeout(() => {
+                setHide(true)
+                 }, 5000);
+              })
+            }
+
+    const handleClickSubscribe = (event) => {
+            event.preventDefault();
+            setLoader(true);
+            postSubscribeData()
+            
+    }
+
+
+    return (
+        <>
+        {
+            hide ? null : 
+            loader && !done ? <LoadingMask /> : done ? <h2>Subscribed!</h2> :
+            <form>
+                <h2>Subscribe</h2>
+                <input type="text" value={mail} onChange={(event) => { handleInputChange(event) }} ></input>
+                {valid ? <button onClick={(event) => {handleClickSubscribe(event)}}>Send</button> : <button type="submit" disabled>Send</button>}
+            </form>
+        }
+        </>
+           )
+    }
+
+ 
+    export default Subscription
+
+
